@@ -40,29 +40,33 @@ def test_visdrone():
 
         ret = detector.run(image)
 
-        # det
-        # convert_eval_format
-        det = []
-        for cls_ind, bboxs in ret['results'].items():
-            category_id = dataset._valid_ids[cls_ind - 1]
-            for bbox in bboxs:
-                bbox[2] -= bbox[0]
-                bbox[3] -= bbox[1]
-                for i in range(4):
-                    bbox[i] = round(bbox[i], 2)
-                score = round(bbox[4], 2)
-                # coco
-                detections.append({
-                    "image_id": int(img_id),
-                    "category_id": int(category_id),
-                    "bbox": bbox[0:4],
-                    "score": score,
-                })
+        # save O/P's
+        with open("/home/grantorshadow/Shaunak/centernet-visdrone/Results_txt/" + str(img_id) + ".txt", "w+") as f:
 
-                det.append([bbox[0], bbox[1], bbox[2], bbox[3],
-                            score, category_id, -1, -1])
+            # det
+            # convert_eval_format
+            det = []
+            for cls_ind, bboxs in ret['results'].items():
+                category_id = dataset._valid_ids[cls_ind - 1]
+                for bbox in bboxs:
+                    bbox[2] -= bbox[0]
+                    bbox[3] -= bbox[1]
+                    for i in range(4):
+                        bbox[i] = round(bbox[i], 2)
+                    score = round(bbox[4], 2)
+                    # coco
+                    detections.append({
+                        "image_id": int(img_id),
+                        "category_id": int(category_id),
+                        "bbox": bbox[0:4],
+                        "score": score,
+                    })
 
-                # f.write(f"{bbox[0]},{bbox[1]},{bbox[2]},{bbox[3]},{score},{category_id},{-1},{-1}\n") 
+                    det.append([bbox[0], bbox[1], bbox[2], bbox[3],
+                                score, category_id, -1, -1])
+
+                    f.write(f"{bbox[0]},{bbox[1]},{bbox[2]},{bbox[3]},{score},{category_id},{-1},{-1}\n")
+        f.close()
         det = np.array(det)
 
         # gt
